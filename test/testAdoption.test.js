@@ -10,8 +10,8 @@ contract("Adoption", (accounts) => {
 
 	describe("adopting a pet and retrieving account addresses", async () => {
 		before("adopt a pet using accounts[0]", async () => {
-			await adoption.adopt(8, { from: accounts[5] });
-			expectedAdopter = accounts[5];
+			await adoption.adopt(8, { from: accounts[0] });
+			expectedAdopter = accounts[0];
 		});
 
 		it("can fetch the address of an owner by pet id", async () => {
@@ -22,6 +22,12 @@ contract("Adoption", (accounts) => {
 		it("can fetch the collection of all pet owners' addresses", async () => {
 			const adopters = await adoption.getAdopters();
 			assert.equal(adopters[8], expectedAdopter, "The owner of the adopted pet should be in the collection.");
+		});
+
+		it("can free a pet using accounts[0]", async () => {
+			await adoption.free(8, { from: accounts[0] });
+			const adopter = await adoption.adopters(8);
+			assert.equal(adopter, '0x0000000000000000000000000000000000000000', "The freed pet should not be adopted anymore!");
 		});
 	});
 });
